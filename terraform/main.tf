@@ -2,7 +2,7 @@ terraform {
   backend "s3" {
     bucket = "ka-cci-terraform-state"
     key    = "ka-cci/default/terraform.tfstate"
-    region = "ap-southeast-1"
+    region = "ap-northeast-1"
   }
   required_providers {
     aws = {
@@ -19,7 +19,7 @@ terraform {
 # Configure params here
 locals {
   cluster_name   = "ka-cci"
-  region         = "ap-southeast-1"
+  region         = "ap-northeast-1"
   email          = "kurtis.assad@circleci.com"
   critical_until = "2026-12-30"
 
@@ -44,7 +44,7 @@ locals {
     Terraform         = "true"
   }
 
-  public_subnets = ["10.0.10.0/24", "10.0.11.0/24", "10.0.12.0/24"]
+  public_subnets = ["10.0.13.0/24", "10.0.11.0/24", "10.0.12.0/24"]
 
   # Full hostname for CircleCI server
   # If subdomain is empty, use root domain; otherwise use subdomain.base_domain
@@ -64,7 +64,7 @@ module "vpc" {
   name = "${local.cluster_name}-eks-vpc"
   cidr = "10.0.0.0/16"
 
-  azs            = ["${local.region}a", "${local.region}b", "${local.region}c"]
+  azs            = ["${local.region}a", "${local.region}c", "${local.region}d"]
   public_subnets = local.public_subnets
 
   enable_nat_gateway = false
