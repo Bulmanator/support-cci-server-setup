@@ -81,6 +81,10 @@ object_storage:
 github:
   enterprise: false
 
+oidc_service:
+  isEnabled: true
+  json_web_keys: "in-secrets"
+  
 # Below are the rest, usually don't need to change these
 postgresql:
   auth:
