@@ -1,14 +1,14 @@
 circleci-server-version: "4.9.0"
 
 argocd:
-  repository: https://github.com/kurtassad/support-cci-server-setup.git
+  repository: https://github.com/Bulmanator/support-cci-server-setup.git
 
 global:
-  clusterName: "ka-cci"
+  clusterName: "jb-cci"
   aws:
-    region: ap-northeast-1
-  domainFilter: ka-cci.com  # Base domain for Route53
-  domainName: "circleci.ka-cci.com"  # Change to your desired subdomain (e.g., "mycci.ka-cci.com") or root domain (e.g., "ka-cci.com")
+    region: eu-west-2
+  domainFilter: circleci-labs.com  # Base domain for Route53
+  domainName: "jb-server.circleci-labs.com"  # Change to your desired subdomain (e.g., "mycci.ka-cci.com") or root domain (e.g., "ka-cci.com")
   otel:
     enabled: true
     collector_host: "jaeger-collector.monitoring.svc.cluster.local"
@@ -29,16 +29,16 @@ machine_provisioner:
   providers:
     ec2:
       enabled: true
-      region: "ap-northeast-1"
+      region: "eu-west-2"
       assignPublicIP: true
       irsaRole: "eks-pod-identity"
       subnets:
-        - "subnet-0662628b13ad03f8e"
-        - "subnet-04c71fecd44779209"
-        - "subnet-0b19f54e310f3b527"
-      securityGroupId: "sg-0a6b9eee01d0ddcc6"
+        - "subnet-0e20ace77b875c808"
+        - "subnet-0177124c8a8f7741d"
+        - "subnet-07596407c02d74c7c"
+      securityGroupId: "sg-0d324da3c2f251a90"
       tags:
-        owner: "kurtis.assad@circleci.com"
+        owner: "james.bulman@circleci.com"
         cost_center: "sm"
         Team: "customer_engineering"
         asset_criticality: "false"
@@ -49,7 +49,7 @@ machine_provisioner:
 # Hack. We are running kong for cert management but need to use annotation to allow external-dns to manage the DNS record.
 nginx:
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: circleci.ka-cci.com, app.circleci.ka-cci.com
+    external-dns.alpha.kubernetes.io/hostname: jb-server.circleci-labs.com app.jb-server.circleci-labs.com
   resources:
     requests:
       cpu: 50m
@@ -61,7 +61,7 @@ nginx:
 kong:
   acme:
     enabled: true
-    email: kurtis.assad@circleci.com
+    email: james.bulman@circleci.com
   resources:
     requests:
       cpu: 50m
@@ -71,11 +71,11 @@ kong:
       memory: 2Gi
 
 object_storage:
-  bucketName: "ka-cci-cci"
+  bucketName: "jb-cci-cci"
   s3:
     enabled: true
-    endpoint: https://s3.ap-northeast-1.amazonaws.com
-    region: ap-northeast-1
+    endpoint: https://s3.eu-west-2.amazonaws.com
+    region: eu-west-2
     irsaRole: "eks-pod-identity" # Hack to allow pod identity instead of irsa
 
 github:
@@ -84,7 +84,7 @@ github:
 oidc_service:
   isEnabled: true
   json_web_keys: "in-secrets"
-  
+
 # Below are the rest, usually don't need to change these
 postgresql:
   auth:

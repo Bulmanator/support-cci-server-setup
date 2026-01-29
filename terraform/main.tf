@@ -1,8 +1,8 @@
 terraform {
   backend "s3" {
-    bucket = "ka-cci-terraform-state"
+    bucket = "jb-cci-server"
     key    = "ka-cci/default/terraform.tfstate"
-    region = "ap-northeast-1"
+    region = "eu-west-2"
   }
   required_providers {
     aws = {
@@ -18,18 +18,18 @@ terraform {
 
 # Configure params here
 locals {
-  cluster_name   = "ka-cci"
-  region         = "ap-northeast-1"
-  email          = "kurtis.assad@circleci.com"
+  cluster_name   = "jb-cci"
+  region         = "eu-west-2"
+  email          = "james.bulman@circleci.com"
   critical_until = "2026-12-30"
 
   # Subdomain for CircleCI server
   # Set to empty string "" to deploy to root domain
-  subdomain   = "circleci"
-  base_domain = "ka-cci.com" # Base domain for your Route53 hosted zone
+  subdomain   = "jb-server"
+  base_domain = "circleci-labs.com" # Base domain for your Route53 hosted zone
 
   # Need to get this from route53
-  hosted_zones = ["arn:aws:route53:::hostedzone/Z09353691DH93X3LBRCKB"]
+  hosted_zones = ["arn:aws:route53:::hostedzone/Z06874573QFFWRZIPHPZC"]
 }
 
 # Derived params
@@ -64,7 +64,7 @@ module "vpc" {
   name = "${local.cluster_name}-eks-vpc"
   cidr = "10.0.0.0/16"
 
-  azs            = ["${local.region}a", "${local.region}c", "${local.region}d"]
+  azs            = ["${local.region}a", "${local.region}c", "${local.region}b"]
   public_subnets = local.public_subnets
 
   enable_nat_gateway = false
