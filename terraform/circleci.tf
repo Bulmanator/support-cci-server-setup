@@ -171,9 +171,7 @@ resource "aws_security_group" "circleci_machine_provisioner" {
 module "circleci_machine_provisioner_pod_identity" {
   source  = "terraform-aws-modules/eks-pod-identity/aws"
   version = "2.4.1"
-
   name = "${module.eks.cluster_name}-cci-provisioner"
-
   attach_custom_policy = true
   source_policy_documents = [
     jsonencode({
@@ -233,11 +231,21 @@ module "circleci_machine_provisioner_pod_identity" {
         },
         {
           "Action" : [
-            "ec2:RunInstances",
+            "ec2:CreateTags",
             "ec2:StartInstances",
             "ec2:StopInstances",
             "ec2:TerminateInstances"
           ],
+          "Effect" : "Allow",
+          "Resource" : "arn:aws:ec2:*:*:instance/*",
+          "Condition" : {
+            "StringEquals" : {
+              "ec2:ResourceTag/ManagedBy" : "circleci-machine-provisioner"
+            }
+          }
+        },
+        {
+          "Action" : "ec2:RunInstances",
           "Effect" : "Allow",
           "Resource" : "arn:aws:ec2:*:*:instance/*",
           "Condition" : {
@@ -252,11 +260,10 @@ module "circleci_machine_provisioner_pod_identity" {
               "ec2:ResourceTag/ManagedBy" : "circleci-machine-provisioner"
             }
           }
-        }
+        },
       ]
     })
   ]
-
   associations = {
     this = {
       cluster_name    = module.eks.cluster_name
@@ -264,6 +271,5 @@ module "circleci_machine_provisioner_pod_identity" {
       service_account = "machine-provisioner"
     }
   }
-
   tags = local.cost_center_tags
 }

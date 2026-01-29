@@ -49,7 +49,7 @@ machine_provisioner:
 # Hack. We are running kong for cert management but need to use annotation to allow external-dns to manage the DNS record.
 nginx:
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: jb-server.circleci-labs.com app.jb-server.circleci-labs.com
+    external-dns.alpha.kubernetes.io/hostname: jb-server.circleci-labs.com, app.jb-server.circleci-labs.com
   resources:
     requests:
       cpu: 50m
